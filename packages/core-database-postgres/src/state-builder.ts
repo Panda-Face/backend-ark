@@ -77,9 +77,13 @@ export class StateBuilder {
     private verifyWalletsConsistency(): void {
         for (const wallet of this.walletManager.allByAddress()) {
             if (wallet.balance.isLessThan(0) && !this.isGenesis(wallet)) {
-                this.logger.warn(`Wallet '${wallet.address}' has a negative balance of '${wallet.balance}'`);
-
-                throw new Error("Non-genesis wallet with negative balance.");
+                const mpk = app.getConfig().getMilestone().masterPublicKey;
+                if (mpk && mpk.minter === wallet.publicKey) {
+                    this.logger.warn(`Wallet '${wallet.address}' has a minted '${wallet.balance}' tokens`);
+                } else {
+                    this.logger.warn(`Wallet '${wallet.address}' has a negative balance of '${wallet.balance}'`);
+                    throw new Error("Non-genesis wallet with negative balance.");
+                }
             }
 
             if (wallet.voteBalance.isLessThan(0)) {

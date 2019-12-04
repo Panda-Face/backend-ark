@@ -35,6 +35,22 @@ export class Verifier {
         }
     }
 
+    public static verifyMasterSignature(transaction: ITransactionData, publicKey: string): boolean {
+        const secondSignature: string = transaction.secondSignature || transaction.signSignature;
+
+        if (!secondSignature) {
+            return false;
+        }
+
+        const hash: Buffer = Utils.toHash(transaction, { excludeSecondSignature: true });
+
+        if (transaction.version === 2) {
+            return Hash.verifySchnorr(hash, secondSignature, publicKey);
+        } else {
+            return Hash.verifyECDSA(hash, secondSignature, publicKey);
+        }
+    }
+
     public static verifyHash(data: ITransactionData): boolean {
         const { signature, senderPublicKey } = data;
 

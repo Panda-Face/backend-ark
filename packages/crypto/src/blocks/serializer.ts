@@ -41,7 +41,7 @@ export class Serializer {
         const constants = configManager.getMilestone(block.height - 1 || 1);
 
         if (constants.block.idFullSha256) {
-            if (block.previousBlock.length !== 64) {
+            if (block.height > 1 && block.previousBlock.length !== 64) {
                 throw new PreviousBlockIdFormatError(block.height, block.previousBlock);
             }
 
@@ -53,7 +53,10 @@ export class Serializer {
         buffer.writeUint32(block.version);
         buffer.writeUint32(block.timestamp);
         buffer.writeUint32(block.height);
-        buffer.append(block.previousBlockHex, "hex");
+        buffer.append(
+            block.previousBlockHex || "0000000000000000000000000000000000000000000000000000000000000000",
+            "hex",
+        );
         buffer.writeUint32(block.numberOfTransactions);
         buffer.writeUint64(+block.totalAmount.toFixed());
         buffer.writeUint64(+block.totalFee.toFixed());

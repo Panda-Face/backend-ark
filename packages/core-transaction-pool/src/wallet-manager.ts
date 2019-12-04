@@ -2,7 +2,7 @@ import { app } from "@arkecosystem/core-container";
 import { Database, State } from "@arkecosystem/core-interfaces";
 import { Wallets } from "@arkecosystem/core-state";
 import { Handlers } from "@arkecosystem/core-transactions";
-import { Identities, Interfaces, Utils } from "@arkecosystem/crypto";
+import { Identities, Interfaces, Managers, Utils } from "@arkecosystem/crypto";
 
 export class WalletManager extends Wallets.WalletManager {
     private readonly databaseService: Database.IDatabaseService = app.resolvePlugin<Database.IDatabaseService>(
@@ -32,11 +32,15 @@ export class WalletManager extends Wallets.WalletManager {
             const senderAddress: string = Identities.Address.fromPublicKey(senderPublicKey);
 
             if (this.databaseService.walletManager.findByAddress(senderAddress).balance.isZero()) {
-                const message: string = "Cold wallet is not allowed to send until receiving transaction is confirmed.";
+                const masterKey = Managers.configManager.getMilestone().masterPublicKey;
+                if (masterKey && masterKey.minter !== senderPublicKey) {
+                    const message: string =
+                        "Cold wallet is not allowed to send until receiving transaction is confirmed.";
 
-                this.logger.error(message);
+                    this.logger.error(message);
 
-                throw new Error(JSON.stringify([message]));
+                    throw new Error(JSON.stringify([message]));
+                }
             }
         }
 

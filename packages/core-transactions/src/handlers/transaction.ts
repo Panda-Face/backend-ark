@@ -3,8 +3,10 @@
 
 import { Database, EventEmitter, State, TransactionPool } from "@arkecosystem/core-interfaces";
 import { Enums, Interfaces, Managers, Transactions } from "@arkecosystem/crypto";
+import { TransactionTypes } from "@arkecosystem/crypto/dist/enums";
 import {
     InsufficientBalanceError,
+    InvalidMasterSignatureError,
     InvalidMultiSignatureError,
     InvalidSecondSignatureError,
     SenderWalletMismatchError,
@@ -40,8 +42,12 @@ export abstract class TransactionHandler implements ITransactionHandler {
         databaseWalletManager: State.IWalletManager,
     ): boolean {
         const { data }: Interfaces.ITransaction = transaction;
+        const masterPublicKey = Managers.configManager.getMilestone().masterPublicKey;
 
-        if (
+        // If there is a minter publicKey, by pass the positive balance for the wallet.
+        if (masterPublicKey && masterPublicKey.minter && masterPublicKey.minter === data.senderPublicKey) {
+            console.log(`Minting new ${data.amount} satoshis`);
+        } else if (
             wallet.balance
                 .minus(data.amount)
                 .minus(data.fee)
@@ -54,7 +60,19 @@ export abstract class TransactionHandler implements ITransactionHandler {
             throw new SenderWalletMismatchError();
         }
 
-        if (wallet.secondPublicKey) {
+        // can't register second public key in master public key mode, since the tx secondsignature is used by it
+        if (masterPublicKey) {
+            if (transaction.type === TransactionTypes.SecondSignature) {
+                throw new InvalidMasterSignatureError();
+            }
+        }
+
+        // if master public key is used to that transaction type, use the master publick key to verify the transaction.
+        if (masterPublicKey && masterPublicKey[transaction.type]) {
+            if (!Transactions.Verifier.verifyMasterSignature(data, masterPublicKey[transaction.type])) {
+                throw new InvalidMasterSignatureError();
+            }
+        } else if (wallet.secondPublicKey) {
             // Ensure the database wallet already has a 2nd signature, in case we checked a pool wallet.
             const databaseWallet: State.IWallet = databaseWalletManager.findByPublicKey(
                 transaction.data.senderPublicKey,
@@ -174,9 +192,7 @@ export abstract class TransactionHandler implements ITransactionHandler {
             processor.pushError(
                 data,
                 "ERR_PENDING",
-                `Sender ${senderPublicKey} already has a transaction of type '${
-                    Enums.TransactionTypes[type]
-                }' in the pool`,
+                `Sender ${senderPublicKey} already has a transaction of type '${Enums.TransactionTypes[type]}' in the pool`,
             );
 
             return true;

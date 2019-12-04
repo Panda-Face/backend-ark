@@ -9,11 +9,15 @@ export class TransferTransactionHandler extends TransactionHandler {
     }
 
     public async bootstrap(connection: Database.IConnection, walletManager: State.IWalletManager): Promise<void> {
-        const transactions = await connection.transactionsRepository.getReceivedTransactions();
+        try {
+            const transactions = await connection.transactionsRepository.getReceivedTransactions();
 
-        for (const transaction of transactions) {
-            const wallet = walletManager.findByAddress(transaction.recipientId);
-            wallet.balance = wallet.balance.plus(transaction.amount);
+            for (const transaction of transactions) {
+                const wallet = walletManager.findByAddress(transaction.recipientId);
+                wallet.balance = wallet.balance.plus(transaction.amount);
+            }
+        } catch (error) {
+            return;
         }
     }
 

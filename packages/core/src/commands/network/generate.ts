@@ -91,10 +91,10 @@ $ ark config:generate --network=mynet7 --premine=120000000000 --delegates=47 --b
                 message: "Can you confirm?",
             } as prompts.PromptObject<string>) as Array<prompts.PromptObject<string>>);
 
-        if (Object.keys(GenerateCommand.flags).find(flagName => !response[flagName])) {
-            // one of the flags was not filled, we can't continue
-            return this.abortWithInvalidInput();
-        }
+        // if (Object.keys(GenerateCommand.flags).find(flagName => !response[flagName])) {
+        //     // one of the flags was not filled, we can't continue
+        //     return this.abortWithInvalidInput();
+        // }
 
         if (response.confirm) {
             return this.generateNetwork({ ...flags, ...response });
@@ -145,12 +145,14 @@ $ ark config:generate --network=mynet7 --premine=120000000000 --delegates=47 --b
                 flags.maxBlockPayload,
                 flags.rewardHeight,
                 flags.rewardAmount,
+                genesisWallet.keys.publicKey,
             );
 
             fs.writeJsonSync(resolve(cryptoConfigDest, "network.json"), network, { spaces: 2 });
             fs.writeJsonSync(resolve(cryptoConfigDest, "milestones.json"), milestones, { spaces: 2 });
             fs.writeJsonSync(resolve(cryptoConfigDest, "genesisBlock.json"), genesisBlock, { spaces: 2 });
             fs.writeJsonSync(resolve(cryptoConfigDest, "exceptions.json"), {});
+            fs.writeJsonSync(resolve(cryptoConfigDest, "genesisWallet.json"), genesisWallet, { spaces: 2 });
 
             const indexFile = [
                 'import exceptions from "./exceptions.json";',
@@ -213,19 +215,33 @@ $ ark config:generate --network=mynet7 --premine=120000000000 --delegates=47 --b
         maxBlockPayload: number,
         rewardHeight: number,
         rewardAmount: number,
+        masterPublicKey: string,
     ) {
         return [
             {
                 height: 1,
                 reward: 0,
                 activeDelegates,
+                masterPublicKey: {
+                    seize: masterPublicKey,
+                    minter: masterPublicKey,
+                    transfer: "",
+                    delegateRegistration: masterPublicKey,
+                    vote: "",
+                    multiSignature: "",
+                    ipfs: "",
+                    timelockTransfer: "",
+                    multiPayment: "",
+                    delegateResignation: "",
+                },
                 blocktime,
                 block: {
                     version: 0,
                     maxTransactions: maxTxPerBlock,
                     maxPayload: maxBlockPayload,
+                    idFullSha256: true,
                 },
-                epoch: "2017-03-21T13:00:00.000Z",
+                epoch: "2017-11-11T13:00:00.000Z",
                 fees: {
                     staticFees: {
                         transfer: 10000000,
@@ -251,11 +267,11 @@ $ ark config:generate --network=mynet7 --premine=120000000000 --delegates=47 --b
 
     private generateCryptoGenesisBlock(genesisWallet, delegates, pubKeyHash: number, totalPremine: string) {
         const premineWallet = this.createWallet(pubKeyHash);
+        const transactions = this.buildDelegateTransactions(delegates);
 
-        const transactions = [
-            ...this.buildDelegateTransactions(delegates),
-            this.createTransferTransaction(premineWallet, genesisWallet, totalPremine),
-        ];
+        if (parseInt(totalPremine) > 0) {
+            transactions.push(this.createTransferTransaction(premineWallet, genesisWallet, totalPremine));
+        }
 
         const genesisBlock = this.createGenesisBlock(premineWallet.keys, transactions, 0);
 
@@ -343,8 +359,8 @@ $ ark config:generate --network=mynet7 --premine=120000000000 --delegates=47 --b
         const block = {
             version: 0,
             totalAmount: totalAmount.toString(),
-            totalFee,
-            reward: 0,
+            totalFee: "" + totalFee,
+            reward: "0",
             payloadHash: payloadHash.toString("hex"),
             timestamp,
             numberOfTransactions: transactions.length,
@@ -366,12 +382,7 @@ $ ark config:generate --network=mynet7 --premine=120000000000 --delegates=47 --b
 
     private getBlockId(block) {
         const hash = this.getHash(block);
-        const blockBuffer = Buffer.alloc(8);
-        for (let i = 0; i < 8; i++) {
-            blockBuffer[i] = hash[7 - i];
-        }
-
-        return new Utils.BigNumber(blockBuffer.toString("hex"), 16).toString();
+        return hash.toString("hex");
     }
 
     private signBlock(block, keys) {

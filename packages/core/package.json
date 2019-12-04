@@ -33,6 +33,8 @@
         "forger:mainnet": "cross-env CORE_PATH_CONFIG=./bin/config/mainnet yarn ark forger:run",
         "forger:testnet": "cross-env CORE_PATH_CONFIG=./bin/config/testnet yarn ark forger:run --env=test",
         "full:testnet": "cross-env CORE_PATH_CONFIG=./bin/config/testnet yarn ark core:run --networkStart --env=test",
+        "full:eurotest": "cross-env CORE_PATH_CONFIG=./bin/config/stable_eur yarn ark core:run --network=stable_eur --networkStart --env=test",
+        "full:eurotest2": "cross-env CORE_PATH_CONFIG=./bin/config/stable_eur2 yarn ark core:run --network=stable_eur",
         "prepack": "../../node_modules/.bin/oclif-dev manifest && npm shrinkwrap",
         "postpack": "rm -f oclif.manifest.json",
         "prepublishOnly": "yarn build",

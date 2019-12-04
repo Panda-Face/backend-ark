@@ -66,6 +66,12 @@ export class InvalidSecondSignatureError extends TransactionError {
     }
 }
 
+export class InvalidMasterSignatureError extends TransactionError {
+    constructor() {
+        super(`Failed to apply transaction, because the master signature is needed and could not be verified.`);
+    }
+}
+
 export class WalletAlreadyResignedError extends TransactionError {
     constructor() {
         super(`Failed to apply transaction, because the wallet already resigned as delegate.`);
