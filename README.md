@@ -1,6 +1,6 @@
 # ARK based stable coin
 
-> Lead Maintainer: [fx thoorens](https://github.com/fixcrypt)
+> Lead Maintainer: [fx thoorens](https://github.com/fix)
 
 ## Introduction
 
