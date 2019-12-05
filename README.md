@@ -140,6 +140,21 @@ Et voilà! you should see something similar to
 [2019-12-05 13:56:01.369] INFO : Broadcasting block 2 to 0 peers
 ```
 
+## Connectig desktop wallet
+
+-   download and install ark wallet here https://github.com/ArkEcosystem/desktop-wallet/releases
+-   when you launch create a new network and put your local server as a seed `http://localhost:4003/' and set a name (Stable Euro)
+-   you can connect your ledger with the ark app on it to create wallet
+-   import the minter wallet using the passphrase located in `packages/crypto/src/networks/myeuro/genesisWallet.json
+
+## minting euros
+
+-   CAVEAT: the desktop wallet is not meant to mint token, thus you need to disable in the wallet console the state `disabled="disabled"`of the Next button in order to get through the UX block when you send more tokens than your balance (ie minting)
+-   in the minter wallet, select send, put address of a receiver wallet and set fees = 0.02
+-   Hit Next and then Send
+
+Et voila!
+
 ## ARK Documentation
 
 -   Development : https://docs.ark.io/guidebook/core/development.html
