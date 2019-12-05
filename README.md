@@ -56,7 +56,7 @@ You need then to publish that network to the compiled src:
 -   `cd ../..`
 -   `yarn build`
 -   `cd packages/core`
--   `bin/config config:publish`
+-   `bin/run config:publish`
     Select the network called `myeuro`
 
 Create a fresh database and a user `ark`:
