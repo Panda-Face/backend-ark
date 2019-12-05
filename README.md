@@ -14,8 +14,8 @@ In order to lauch your testnet on your local machine
 -   Install nodejs, yarn and postgresql 9.6.x
 -   Checkout this repository
 -   `git clone https://github.com/panda-face/backend-ark`
--   `git checkout stablecoin`
 -   `cd backend-ark`
+-   `git checkout stablecoin`
 -   `yarn setup`
 
 Then you need to create a genesis blocks as well as the first federation of block producers (called delegates)
