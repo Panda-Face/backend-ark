@@ -1,0 +1,19 @@
+{
+  "title": "DARK Explorer",
+  "server": "https://dexplorer.ark.io/api",
+  "alias": "Development",
+  "activeDelegates": 51,
+  "rewardOffset": 75600,
+  "currencies": [],
+  "knownWallets": {},
+  "defaults": {
+    "token": "DARK",
+    "symbol": "DѦ",
+    "currency": null,
+    "priceChartOptions": {
+      "enabled": false,
+      "period": "day",
+      "type": "price"
+    }
+  }
+}
