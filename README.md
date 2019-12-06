@@ -155,6 +155,14 @@ Et voilà! you should see something similar to
 
 Et voila!
 
+## lauching explorer
+- `cd explorer`
+- `yarn`
+- `yarn build`
+- `nano ../packages/core/bin/config/myeuro/plugins.js` and add at the end `"@arkecosystem/core-explorer": { path: "../../explorer/dist" }`
+- restart the node
+- explorer is running here http://localhost:4200/
+
 ## ARK Documentation
 
 -   Development : https://docs.ark.io/guidebook/core/development.html
