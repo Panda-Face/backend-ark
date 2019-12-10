@@ -161,25 +161,25 @@ Et voila!
 - create a file `networks/myeuro.json` an copy the following content
   ```
   {
-  "title": "EURO Explorer",
-  "server": "http://localhost:4003/api",
-  "alias": "Stable Euro",
-  "activeDelegates": 5,
-  "rewardOffset": 10800,
-  "currencies": [],
-  "knownWallets": {},
-  "defaults": {
-    "token": "EUR",
-    "symbol": "€",
-    "currency": null,
-    "priceChartOptions": {
-      "enabled": true,
-      "period": "day",
-      "type": "price"
-    }
-  }
-}
-```
+      "title": "EURO Explorer",
+      "server": "http://localhost:4003/api",
+      "alias": "Stable Euro",
+      "activeDelegates": 5,
+      "rewardOffset": 10800,
+      "currencies": [],
+      "knownWallets": {},
+      "defaults": {
+        "token": "EUR",
+        "symbol": "€",
+        "currency": null,
+        "priceChartOptions": {
+          "enabled": true,
+          "period": "day",
+          "type": "price"
+         }
+       }
+  }```
+then
 - `yarn build --network myeuro`
 - `nano ../packages/core/bin/config/myeuro/plugins.js` and add at the end `"@arkecosystem/core-explorer": { path: "../../explorer/dist" }`
 - restart the node
