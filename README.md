@@ -160,7 +160,7 @@ Et voila!
 - `yarn`
 - create a file `networks/myeuro.json` an copy the following content
   ```
-  {
+    {
       "title": "EURO Explorer",
       "server": "http://localhost:4003/api",
       "alias": "Stable Euro",
@@ -178,7 +178,9 @@ Et voila!
           "type": "price"
          }
        }
-  }```
+  }
+  ```
+
 then
 - `yarn build --network myeuro`
 - `nano ../packages/core/bin/config/myeuro/plugins.js` and add at the end `"@arkecosystem/core-explorer": { path: "../../explorer/dist" }`
