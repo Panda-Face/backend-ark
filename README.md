@@ -4,8 +4,8 @@
 
 ## Introduction
 
-> This repository is a version of ark for the purpose of stable coin mechanics.
-> It bascially impose masterkey signatures on different transactions (main one for delegate registration) in order to fine tune the permission network. Between fully permissioned (any transactino should be validated beforehand) to somewhat public (only delegate registrations are permissioned). Also a special masterkey (could be different) can mint, burn (TODO: or seize) tokens.
+This repository is a version of ark for the purpose of stable coin mechanics.
+It bascially impose masterkey signatures on different transactions (main one for delegate registration) in order to fine tune the permission network. Between fully permissioned (any transactino should be validated beforehand) to somewhat public (only delegate registrations are permissioned). Also a special masterkey (could be different) can mint, burn (TODO: or seize) tokens.
 
 ## Getting Started
 
